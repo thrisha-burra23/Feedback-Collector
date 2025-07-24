@@ -85,7 +85,7 @@ A secure, full-stack web application for collecting, managing, and responding to
 
 ## 📁 File Structure
 
-
+```
 ├── public/
 │   └── styles.css
 ├── views/
@@ -101,7 +101,7 @@ A secure, full-stack web application for collecting, managing, and responding to
 ├── .gitignore
 ├── package.json
 
-
+```
 ---
 
 ## 💡 Credits & Inspiration
