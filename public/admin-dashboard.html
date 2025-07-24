@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body class="bg-light">
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-dark bg-dark px-3">
+    <span class="navbar-brand">🛡️ Admin Dashboard</span>
+    <a href="/logout" class="btn btn-outline-light">Logout</a>
+  </nav>
+
+  <div class="container my-5">
+    <h2 class="mb-4">Hello Admin 👩‍💻</h2>
+    <h4>📋 All Submitted Feedback</h4>
+    <div id="feedbackCards"></div>
+  </div>
+
+  <script>
+    // Load all feedbacks
+    fetch('/api/all-feedbacks')
+      .then(res => res.json())
+      .then(feedbacks => {
+        const container = document.getElementById('feedbackCards');
+        container.innerHTML = '';
+
+        feedbacks.forEach(entry => {
+          const card = document.createElement('div');
+          card.className = 'card mb-3 shadow-sm';
+          card.dataset.id = entry.id;
+
+          card.innerHTML = `
+            <div class="card-body">
+              <p><strong>User:</strong> ${entry.name}</p>
+              <p><strong>Email:</strong> ${entry.email}</p>
+              <p><strong>Message:</strong> <span class="message-text">${entry.message}</span></p>
+              <p><strong>Admin Reply:</strong> 
+                <span class="text-muted">${entry.admin_reply || 'No reply yet'}</span>
+              </p>
+
+              <!-- Reply Form -->
+              <form method="POST" action="/admin-reply/${entry.id}" class="mb-2">
+                <textarea name="reply" class="form-control mb-2" placeholder="Write reply">${entry.admin_reply || ''}</textarea>
+                <button type="submit" class="btn btn-sm btn-info">Reply</button>
+              </form>
+
+              <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+            </div>
+          `;
+          container.appendChild(card);
+        });
+
+        activateDeleteButtons();
+      });
+
+    function activateDeleteButtons() {
+      document.querySelectorAll('.delete-btn').forEach(button => {
+        button.addEventListener('click', () => {
+          const id = button.closest('.card').dataset.id;
+          if (confirm('Delete this feedback?')) {
+            window.location.href = `/admin-delete/${id}`;
+          }
+        });
+      });
+    }
+  </script>
+</body>
+</html>
